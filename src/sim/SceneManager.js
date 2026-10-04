@@ -15,6 +15,7 @@ export class SceneManager {
     const aspect = canvasContainer.clientWidth / canvasContainer.clientHeight || 1;
     this.camera = new THREE.PerspectiveCamera(55, aspect, 1, 10000);
     this.camera.position.set(0, 35, 120);
+    
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -44,6 +45,8 @@ export class SceneManager {
     this.sunLight.shadow.camera.top = d;
     this.sunLight.shadow.camera.bottom = -d;
     this.scene.add(this.sunLight);
+    // was 0.0012 (fog) / 0.0018 (dust) / 3e-4 (clear)
+    this.scene.fog = new Cs(color, 0.0003);
 
     // Secondary tactical fill light
     this.hemiLight = new THREE.HemisphereLight(0x87ceeb, 0x3d3d3d, 0.3);
