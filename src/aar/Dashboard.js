@@ -4,10 +4,10 @@
  * chronological decision timeline, and AI adversary drill recommendations.
  */
 
-import { Chart, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
+import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 
 // Register Chart.js components
-Chart.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 export class AARDashboard {
   constructor(domRoot, onRestartDrill, onHome) {

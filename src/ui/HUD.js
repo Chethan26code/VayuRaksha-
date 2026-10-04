@@ -147,11 +147,37 @@ export class HUD {
       </div>
     `;
 
-    // Initialize Radar Canvas
+    // Initialize Radar Canvas & Click Designation
     const canvas = document.getElementById('radar-canvas');
     this.radarDisplay = new RadarDisplay(canvas);
     this.radarDisplay.resize();
     window.addEventListener('resize', () => this.radarDisplay.resize());
+
+    // Click on Radar Canvas designates nearest target
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const radius = Math.min(cx, cy) - 18;
+
+      let closest = null;
+      let closestDist = Infinity;
+      for (const trk of this.activeTracks) {
+        if (trk.isNeutralized || !trk.position) continue;
+        const px = cx + (trk.position.x / 3000) * radius;
+        const py = cy - (trk.position.z / 3000) * radius;
+        const d = Math.hypot(px - x, py - y);
+        if (d < 35 && d < closestDist) {
+          closestDist = d;
+          closest = trk;
+        }
+      }
+      if (closest) {
+        this.selectTrack(closest.trackId);
+      }
+    });
 
     this.bindDOMEvents();
   }
@@ -190,6 +216,16 @@ export class HUD {
         this.executeEngage(method);
       };
     });
+
+    // Event delegation on track list container so clicks never drop
+    const trackListContainer = document.getElementById('track-list');
+    trackListContainer.addEventListener('click', (e) => {
+      const card = e.target.closest('.track-card');
+      if (card) {
+        const id = card.getAttribute('data-id');
+        this.selectTrack(id);
+      }
+    });
   }
 
   setActiveCamBtn(activeId) {
@@ -199,13 +235,15 @@ export class HUD {
 
   setupKeyboardShortcuts() {
     window.addEventListener('keydown', (e) => {
-      // Avoid firing when typing in an input
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
       const key = e.key.toUpperCase();
 
       if (key === 'ESCAPE') {
         this.callbacks.onEndSession?.();
+      } else if (key === 'TAB') {
+        e.preventDefault();
+        this.cycleNextTarget();
       } else if (key === 'C') {
         this.setActiveCamBtn('btn-cam-op');
         this.callbacks.onCameraChange?.('operator');
@@ -238,22 +276,59 @@ export class HUD {
     });
   }
 
+  ensureTargetSelected() {
+    if (this.selectedTrackId) {
+      const current = this.activeTracks.find(t => t.trackId === this.selectedTrackId);
+      if (current && !current.isNeutralized) return this.selectedTrackId;
+    }
+    const candidate = this.activeTracks.find(t => !t.isNeutralized);
+    if (candidate) {
+      this.selectTrack(candidate.trackId);
+      return candidate.trackId;
+    }
+    return null;
+  }
+
+  cycleNextTarget() {
+    const aliveTracks = this.activeTracks.filter(t => !t.isNeutralized);
+    if (aliveTracks.length === 0) return;
+
+    const currIdx = aliveTracks.findIndex(t => t.trackId === this.selectedTrackId);
+    const nextIdx = (currIdx + 1) % aliveTracks.length;
+    this.selectTrack(aliveTracks[nextIdx].trackId);
+    this.showAlert(`DESIGNATED ${aliveTracks[nextIdx].trackId}`, 'info');
+  }
+
   executeDetect() {
-    if (!this.selectedTrackId) return;
-    this.callbacks.onDetect?.(this.selectedTrackId);
-    this.showAlert(`TRACK ${this.selectedTrackId} CONFIRMED & DESIGNATED ON SENSORS`, 'info');
+    const trackId = this.ensureTargetSelected();
+    if (!trackId) {
+      this.showAlert('NO ACTIVE TARGETS ON SENSORS', 'warning');
+      return;
+    }
+    this.callbacks.onDetect?.(trackId);
+    this.showAlert(`TRACK ${trackId} CONFIRMED & DESIGNATED ON SENSORS`, 'info');
   }
 
   executeClassify(type) {
-    if (!this.selectedTrackId) return;
-    this.callbacks.onClassify?.(this.selectedTrackId, type);
-    this.showAlert(`TRACK ${this.selectedTrackId} CLASSIFIED AS [${type.toUpperCase()}]`, 'success');
+    const trackId = this.ensureTargetSelected();
+    if (!trackId) {
+      this.showAlert('NO ACTIVE TARGETS ON SENSORS', 'warning');
+      return;
+    }
+    this.callbacks.onClassify?.(trackId, type);
+    this.showAlert(`TRACK ${trackId} CLASSIFIED AS [${type.toUpperCase()}]`, 'success');
   }
 
   executeEngage(method) {
-    if (!this.selectedTrackId) return;
-    this.callbacks.onEngage?.(this.selectedTrackId, method);
-    this.showAlert(`DEPLOYING COUNTERMEASURE: ${method.toUpperCase()} AGAINST ${this.selectedTrackId}`, 'warning');
+    const trackId = this.ensureTargetSelected();
+    if (!trackId) {
+      this.showAlert('NO ACTIVE TARGETS ON SENSORS', 'warning');
+      return;
+    }
+    this.callbacks.onEngage?.(trackId, method);
+    this.showAlert(`DEPLOYING COUNTERMEASURE: ${method.toUpperCase()} AGAINST ${trackId}`, 'warning');
+    // Auto cycle to next incoming hostile target after engaging
+    setTimeout(() => this.cycleNextTarget(), 800);
   }
 
   showAlert(text, tone = 'info') {
@@ -272,6 +347,20 @@ export class HUD {
   update(simTime, tracks, scenario, clutterBlips, sweepAngle) {
     this.activeTracks = tracks;
 
+    // Auto-designate first target if none selected or if previous target neutralized
+    if (!this.selectedTrackId && tracks.length > 0) {
+      const firstActive = tracks.find(t => !t.isNeutralized);
+      if (firstActive) {
+        this.selectTrack(firstActive.trackId);
+      }
+    } else if (this.selectedTrackId) {
+      const current = tracks.find(t => t.trackId === this.selectedTrackId);
+      if (current && current.isNeutralized) {
+        const next = tracks.find(t => !t.isNeutralized);
+        if (next) this.selectTrack(next.trackId);
+      }
+    }
+
     // Update Telemetry Header
     const min = Math.floor(simTime / 60);
     const sec = (simTime % 60).toFixed(1);
@@ -285,8 +374,12 @@ export class HUD {
     this.setGauge('rf', deg.rf || 0);
     this.setGauge('eo', deg.eo || 0);
 
-    // Update Track List DOM
-    this.renderTrackList(tracks);
+    // Throttle Track List DOM re-rendering (every 250ms) to preserve responsiveness
+    const now = performance.now();
+    if (!this.lastTrackRender || now - this.lastTrackRender > 250) {
+      this.lastTrackRender = now;
+      this.renderTrackList(tracks);
+    }
 
     // Update Inspector if a track is selected
     this.updateInspector();
@@ -309,13 +402,14 @@ export class HUD {
       fill.style.background = '#ffcc00';
       lbl.textContent = 'DEGRADED';
     } else {
-      fill.style.background = '#ff3333';
+      fill.style.background = '#ff3344';
       lbl.textContent = 'CRITICAL INTERFERENCE';
     }
   }
 
   renderTrackList(tracks) {
     const container = document.getElementById('track-list');
+    if (!container) return;
     document.getElementById('track-count-badge').textContent = `${tracks.length} TARGETS`;
 
     if (tracks.length === 0) {
@@ -347,14 +441,6 @@ export class HUD {
         </div>
       `;
     }).join('');
-
-    // Bind click events on track cards
-    container.querySelectorAll('.track-card').forEach(el => {
-      el.onclick = () => {
-        const id = el.getAttribute('data-id');
-        this.selectTrack(id);
-      };
-    });
   }
 
   selectTrack(trackId) {

@@ -93,15 +93,15 @@
       "name": "Capt. Vikram Rathore",
       "rank": "Captain",
       "unitId": "unit_15_ad",
-      "sessionsCount": 15,
-      "avgScore": 83,
+      "sessionsCount": 16,
+      "avgScore": 79,
       "skills": {
-        "night_detection": 1197,
-        "degraded_sensors": 987,
-        "decoy_rejection": 1191,
-        "threat_classification": 987,
+        "night_detection": 1175,
+        "degraded_sensors": 974,
+        "decoy_rejection": 1201,
+        "threat_classification": 974,
         "swarm_prioritisation": 1000,
-        "roe_compliance": 1226
+        "roe_compliance": 1203
       },
       "banditArms": {
         "tpl_night_decoy_heavy": {
@@ -270,6 +270,17 @@
       "grade": "UNSATISFACTORY",
       "timestamp": "2026-10-04T09:20:53.746Z",
       "eventCount": 2
+    },
+    {
+      "id": "sess_1791107239581",
+      "traineeId": "tr_01",
+      "scenarioId": "urban_night_mixed",
+      "scenarioName": "Phase 2: Urban Night Complex Multi-Vector Threat",
+      "seed": 4721,
+      "score": 12,
+      "grade": "UNSATISFACTORY",
+      "timestamp": "2026-10-04T09:47:19.581Z",
+      "eventCount": 4
     }
   ]
 }
