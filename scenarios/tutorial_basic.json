@@ -1,0 +1,37 @@
+{
+  "id": "tutorial_basic",
+  "name": "Phase 1: Basic Airspace Intrusion (Daylight)",
+  "description": "Introductory counter-UAS training drill. Single tactical reconnaissance quadcopter breaching operational airspace under clear daytime conditions.",
+  "seed": 1001,
+  "difficulty": 2,
+  "env": {
+    "terrain": "rural",
+    "timeOfDay": 11,
+    "weather": "clear"
+  },
+  "sensors": {
+    "radar": 0.0,
+    "rf": 0.0,
+    "eo": 0.0,
+    "acoustic": 0.0
+  },
+  "defendedAsset": {
+    "name": "Forward Operating Base (FOB) Alpha",
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "radius": 150
+  },
+  "threats": [
+    {
+      "id": "th-recon-01",
+      "type": "recon_quad",
+      "bearing": 45,
+      "distance": 1800,
+      "altitude": 120,
+      "spawnT": 3.0,
+      "speed": 18
+    }
+  ],
+  "skills": ["threat_classification", "roe_compliance"]
+}

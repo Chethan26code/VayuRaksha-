@@ -1,0 +1,105 @@
+{
+  "id": "rural_swarm",
+  "name": "Phase 3: Border Outpost Coordinated Swarm Assault",
+  "description": "High-intensity swarm saturation attack against a forward border post under heavy desert dust. Swarm deploys flanking diversionary decoys while main attack elements sprint towards the radar mast.",
+  "seed": 8832,
+  "difficulty": 9,
+  "env": {
+    "terrain": "rural",
+    "timeOfDay": 16,
+    "weather": "dust"
+  },
+  "sensors": {
+    "radar": 0.25,
+    "rf": 0.45,
+    "eo": 0.5,
+    "acoustic": 0.3
+  },
+  "defendedAsset": {
+    "name": "Border Surveillance Radar Post (LOC Sector)",
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "radius": 180
+  },
+  "threats": [
+    {
+      "id": "decoy-bird-02",
+      "type": "bird",
+      "bearing": 210,
+      "distance": 1600,
+      "altitude": 60,
+      "spawnT": 2.0,
+      "speed": 14
+    },
+    {
+      "id": "swarm-lead-01",
+      "type": "recon_quad",
+      "bearing": 15,
+      "distance": 2600,
+      "altitude": 220,
+      "spawnT": 4.0,
+      "speed": 22,
+      "isSwarmLeader": true
+    },
+    {
+      "id": "swarm-wing-02",
+      "type": "strike_quad",
+      "bearing": 18,
+      "distance": 2650,
+      "altitude": 200,
+      "spawnT": 5.0,
+      "speed": 28,
+      "swarmGroup": "alpha"
+    },
+    {
+      "id": "swarm-wing-03",
+      "type": "strike_quad",
+      "bearing": 12,
+      "distance": 2700,
+      "altitude": 210,
+      "spawnT": 5.5,
+      "speed": 28,
+      "swarmGroup": "alpha"
+    },
+    {
+      "id": "swarm-wing-04",
+      "type": "strike_quad",
+      "bearing": 25,
+      "distance": 2750,
+      "altitude": 190,
+      "spawnT": 6.0,
+      "speed": 30,
+      "swarmGroup": "alpha"
+    },
+    {
+      "id": "swarm-wing-05",
+      "type": "strike_quad",
+      "bearing": 355,
+      "distance": 2620,
+      "altitude": 215,
+      "spawnT": 6.5,
+      "speed": 29,
+      "swarmGroup": "alpha"
+    },
+    {
+      "id": "heavy-kamikaze-06",
+      "type": "fixed_wing",
+      "bearing": 80,
+      "distance": 3200,
+      "altitude": 380,
+      "spawnT": 12.0,
+      "speed": 42
+    },
+    {
+      "id": "decoy-civ-07",
+      "type": "civilian_quad",
+      "bearing": 270,
+      "distance": 1800,
+      "altitude": 90,
+      "spawnT": 15.0,
+      "speed": 15
+    }
+  ],
+  "skills": ["swarm_prioritisation", "degraded_sensors", "threat_classification", "roe_compliance"]
+}

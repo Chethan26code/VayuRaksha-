@@ -1,0 +1,37 @@
+{
+  "version": "1.0-DSSC-STANDARD",
+  "doctrine": "Indian MoD Counter-UAS Rules of Engagement (DSSC Staff College Training Baseline)",
+  "notes": "Default doctrinal matrix. Instructors can modify this JSON or via Instructor Portal without changing application code.",
+  "rules": {
+    "bird": {
+      "name": "Avian Target (Decoy)",
+      "correct": ["ignore"],
+      "acceptable": [],
+      "penalty": ["kinetic", "jam", "capture", "escalate"]
+    },
+    "civilian_quad": {
+      "name": "Commercial Drone",
+      "correct": ["jam", "escalate"],
+      "acceptable": ["capture"],
+      "penalty": ["kinetic"]
+    },
+    "recon_quad": {
+      "name": "Military Recon Quadcopter",
+      "correct": ["jam"],
+      "acceptable": ["escalate", "capture"],
+      "penalty": ["ignore"]
+    },
+    "strike_quad": {
+      "name": "FPV Kamikaze / Loitering Munition",
+      "correct": ["kinetic", "jam"],
+      "acceptable": ["capture"],
+      "penalty": ["ignore"]
+    },
+    "fixed_wing": {
+      "name": "Fixed-Wing Attack Platform",
+      "correct": ["kinetic", "escalate"],
+      "acceptable": ["jam"],
+      "penalty": ["ignore"]
+    }
+  }
+}

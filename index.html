@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VayuRaksha — AI Counter-Drone Threat Simulation Trainer (MoD DSSC)</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <!-- GLOBAL TOP CONTROL STRIP -->
+  <nav id="global-nav" class="global-nav">
+    <div class="global-nav-left">
+      <span class="mod-crest">🇮🇳 DSSC C-UAS</span>
+      <span style="color: var(--panel-border)">|</span>
+      <span>PLATFORM: <strong>VAYURAKSHA v1.0-OFFLINE</strong></span>
+    </div>
+    <div class="nav-links">
+      <button id="nav-mission-select" class="nav-btn">🎯 Mission Select</button>
+      <button id="nav-adversary-drill" class="nav-btn highlight">🧠 Launch AI Adversary Drill</button>
+      <button id="nav-instructor-portal" class="nav-btn">🏛️ Instructor Portal</button>
+    </div>
+  </nav>
+
+  <!-- 3D WEBGL VIEWPORT -->
+  <div id="viewport-container"></div>
+
+  <!-- HEADS-UP DISPLAY (HUD) LAYER -->
+  <div id="hud-root"></div>
+
+  <!-- MODAL LAYER (AAR DEBRIEF & INSTRUCTOR CONSOLE) -->
+  <div id="modal-root"></div>
+
+  <!-- APP ENTRY POINT -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

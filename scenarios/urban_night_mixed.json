@@ -1,0 +1,55 @@
+{
+  "id": "urban_night_mixed",
+  "name": "Phase 2: Urban Night Complex Multi-Vector Threat",
+  "description": "Critical night-time metropolitan installation defence drill. Atmospheric fog and urban clutter degrading sensor feeds. Ingress of simultaneous decoy, surveillance, and high-speed kamikaze drone.",
+  "seed": 4721,
+  "difficulty": 6,
+  "env": {
+    "terrain": "urban",
+    "timeOfDay": 22,
+    "weather": "fog"
+  },
+  "sensors": {
+    "radar": 0.35,
+    "rf": 0.1,
+    "eo": 0.65,
+    "acoustic": 0.25
+  },
+  "defendedAsset": {
+    "name": "Metropolitan Command HQ (Sector 4)",
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "radius": 200
+  },
+  "threats": [
+    {
+      "id": "decoy-bird-01",
+      "type": "bird",
+      "bearing": 75,
+      "distance": 1400,
+      "altitude": 80,
+      "spawnT": 4.0,
+      "speed": 12
+    },
+    {
+      "id": "th-recon-02",
+      "type": "recon_quad",
+      "bearing": 315,
+      "distance": 2200,
+      "altitude": 160,
+      "spawnT": 8.0,
+      "speed": 16
+    },
+    {
+      "id": "th-strike-01",
+      "type": "strike_quad",
+      "bearing": 160,
+      "distance": 2000,
+      "altitude": 90,
+      "spawnT": 16.0,
+      "speed": 34
+    }
+  ],
+  "skills": ["night_detection", "decoy_rejection", "threat_classification", "roe_compliance"]
+}
