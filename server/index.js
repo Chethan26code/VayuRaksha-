@@ -25,8 +25,20 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// Serve static project files
+// Serve compiled production bundle if available (dist), otherwise fallback to root
+const distPath = path.join(__dirname, '../dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 app.use(express.static(path.join(__dirname, '../')));
+
+app.get('/', (req, res) => {
+  const distIndex = path.join(__dirname, '../dist/index.html');
+  if (fs.existsSync(distIndex)) {
+    return res.sendFile(distIndex);
+  }
+  res.sendFile(path.join(__dirname, '../index.html'));
+});
 
 // 1. Scenarios API
 app.get('/api/scenarios', (req, res) => {
